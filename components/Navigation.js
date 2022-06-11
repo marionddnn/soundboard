@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import  Home  from "./Home";
 import ListSounds from "./ListSounds";
+import SearchSounds from './SearchSounds';
 import Sampler from "./Sampler";
 import Modify from "./Modify"
 
@@ -25,6 +26,9 @@ const MainNavigation = () => {
           <Nav.Screen
            name="ListSounds"
            component={ListSounds}/>
+        <Nav.Screen
+           name="SearchSounds"
+           component={SearchSounds}/>
         </Nav.Navigator>
         </NavigationContainer>
   );
