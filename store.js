@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
-import { AsyncStorage } from "@react-native-community/async-storage";
-import storage from 'redux-persist/lib/storage'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+//import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk'
 import listReducer from "./components/listSlice";
 
@@ -13,7 +13,7 @@ const reducers = combineReducers(
 
 const persistConfig = {
   key: "root",
-  storage,
+  storage : AsyncStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, 
