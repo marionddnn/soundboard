@@ -1,14 +1,18 @@
-import { View, Text, Button, FlatList, TextInput, Pressable, ScrollView } from "react-native";
+import { View, Text, Button, FlatList, TextInput, Pressable, PermissionsAndroid, ScrollView, Linking } from "react-native";
 import { useState } from "react";
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { addSoundToList } from "./listSlice";
 import { Audio } from 'expo-av';
 import React from "react";
+import * as FS from "expo-file-system";
 
 
 
 const Search = () => {
+    
+    FS.makeDirectoryAsync(FS.documentDirectory + "Sounds");
     const baseUrl = "https://freesound.org/apiv2/search/text/?query=";
     const token = "7yIIC44NakzVpJCMw5lgGNUX9XAmL7BlrBWB6XNl";
     const [search, setSearch] = useState("");
@@ -16,13 +20,6 @@ const Search = () => {
     const [sound, setSound] = React.useState();
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    
-    const getSound= () => {
-        const sounds =  Audio.Sound.createAsync(
-        { uri: baseUrl + search + token },
-        { shouldPlay: true }
-      );
-    }
 
     async function playSound(id) {
       let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ id + "/?token=" + token)).json();
@@ -49,7 +46,47 @@ const Search = () => {
     }
 
     const addSound = async (item) => {
-        dispatch(addSoundToList(item));
+      
+      let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ item.id + "/?token=" + token)).json();
+       
+        const downloadResumable = FS.createDownloadResumable(
+          r.download,
+          FS.documentDirectory + "Sounds/" + item.id + ".wav",
+          {},
+          callback
+        );
+
+        try {
+          const { uri } = await downloadResumable.downloadAsync();
+        } catch (e) {
+          console.error(e);
+        }
+        
+        try {
+          await downloadResumable.pauseAsync();
+          AsyncStorage.setItem('pausedDownload', JSON.stringify(downloadResumable.savable()));
+        } catch (e) {
+          console.error(e);
+        }
+        
+        try {
+          const { uri } = await downloadResumable.resumeAsync();
+
+        } catch (e) {
+          console.error(e);
+        }
+
+        const callback = downloadProgress => {
+          const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+          this.setState({
+            downloadProgress: progress,
+          });
+        };
+        
+        const fileInfo = await FS.getInfoAsync(FS.documentDirectory + "Sounds/" + item.id + ".wav");
+        const newItem = {...item, uri : fileInfo.uri};
+        dispatch(addSoundToList(newItem));
+          console.log(newItem);
     }
 
     return (

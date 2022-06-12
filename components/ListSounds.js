@@ -4,20 +4,35 @@ import { deleteSoundToList, listSelector } from "./listSlice";
 import { Audio } from 'expo-av';
 import React from "react";
 import { useEffect, useState } from "react";
-import * as FS from "expo-file-system";
 
 const ListSounds = () => {
     const list = useSelector(listSelector);
     const dispatch = useDispatch();
     const [sound, setSound] = React.useState();
 
-    async function playSound(item) {
-        console.log('Loading Sound');
+    async function playSoundLocal(item){
+
         const { sound } = await Audio.Sound.createAsync(
-           require('../src/clap_2.wav')
-        );
-        setSound(sound);
-        await sound.playAsync(); }
+            item.src
+         );
+         setSound(sound);
+         await sound.playAsync(); 
+    }
+
+    async function playSoundUri(item){
+        const { sound } = await Audio.Sound.createAsync(
+            {uri : item.uri}
+         );
+         setSound(sound);
+         await sound.playAsync(); 
+    }
+
+    async function playSound(item) {
+        console.log(item);
+        item.uri  ? playSoundUri(item) : playSoundLocal(item);
+        console.log('Loading Sound');
+    }
+        
 
     const deleteSound = (item) => {
         dispatch(deleteSoundToList(item));
