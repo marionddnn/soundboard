@@ -5,12 +5,14 @@ import { Audio } from 'expo-av';
 import React from "react";
 import { useEffect, useState } from "react";
 import * as FS from "expo-file-system";
-import { addSoundToSampler } from "./samplerSlice";
+import { addSoundToSampler, samplerSelector } from "./samplerSlice";
 
 const ListSounds = () => {
     const list = useSelector(listSelector);
     const dispatch = useDispatch();
     const [sound, setSound] = React.useState();
+    const sampler = useSelector(samplerSelector);
+    const actual = sampler.currentModify;
 
     async function playSoundLocal(item){
 
@@ -36,7 +38,8 @@ const ListSounds = () => {
     }
 
     const chooseSound = (item) => {
-        let obj = item.src ? {id : item.id, src : item.src} : {id : item.id, uri : item.uri};
+        let obj = item.src ? {id : actual, src : item.src} : {id : actual, uri : item.uri};
+        dispatch(addSoundToSampler(obj));
     }
         
     const deleteSound = (item) => {
