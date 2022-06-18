@@ -4,10 +4,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk'
 import listReducer from "./components/listSlice";
+import authReducer from "./components/authSlice";
+import samplerReducer from "./components/samplerSlice";
 
 const reducers = combineReducers(
   { 
       list : listReducer,
+      auth : authReducer,
+      sampler : samplerReducer
   }
 );
 
