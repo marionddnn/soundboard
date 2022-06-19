@@ -51,8 +51,6 @@ const Search = () => {
 
     async function addSound (item) {
       let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ item.id + "/?token=" + token)).json();
-      //console.log(r);
-      console.log("auth" + auth);
         const {uri} = await FS.downloadAsync(
           r.download,
           FS.documentDirectory + "Sounds/" + item.id + ".wav",
@@ -67,7 +65,7 @@ const Search = () => {
     }
 
     return (
-      <ScrollView>
+      <View>
       <TextInput
         onSubmitEditing={research}
         onChangeText={setSearch}
@@ -76,6 +74,10 @@ const Search = () => {
         placeholder="Search on freesound"/>
         <Button color="#1DA878" onPress={research} title="Search"></Button>
         <FlatList data={results.results}  keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          <ScrollView>
+          </ScrollView>
+        }
         renderItem={({ item }) => 
             <View>
                 <Pressable style={{ backgroundColor: "white", padding : "1%", borderBottom : "1px dotted black"}} onPress={() => 
@@ -88,12 +90,11 @@ const Search = () => {
                 <Text style={{  marginRight : "1%" }}>id : {item.id}</Text>
                 <Button color="#1677A8" title="Play Sound" onPress={()=>{playSound(item.id)}}/>
                 </Pressable>
-               
             </View>
         }
         >
         </FlatList>
-      </ScrollView>
+      </View>
       
     );
   };

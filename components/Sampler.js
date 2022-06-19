@@ -41,12 +41,18 @@ const Sampler = () => {
       console.log('Loading Sound');
     }
 
+    function returnColor(el) {
+      let colorArray = ["#B64ED9", "#1677A8", "#E67157", "#E6CA44", "#E64A6C", "#F04F42", "#1677A8", "#E6B245", "#E64A6C", "#86BFF0", "#61E6B6", "#E67157", "#B64ED9", "#E64790", "#86BFF0"]
+      return colorArray[el];
+    }
+
     return (
         <View style={{flexDirection : "row", flexWrap : "wrap", justifyContent:"center"}}>
             {[...Array(15)].map((i, el) => (
                  <Pressable
+                 key={el}
                  onLongPress={() => (setCurrent(el),
-                  navigation.navigate({ //stock in store the current pad
+                  navigation.navigate({ 
                     name :"Modify",
                   }))
                   }
@@ -54,7 +60,7 @@ const Sampler = () => {
                   style={({ pressed }) => [
                     {
                       backgroundColor: pressed
-                        ? parseInt(el) % 2 ? "#1677A8" : "orange"
+                        ? returnColor(el)
                         : "lightgrey",
                       border: pressed
                         ? "1px solid black"

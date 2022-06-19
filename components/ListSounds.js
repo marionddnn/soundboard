@@ -6,6 +6,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import * as FS from "expo-file-system";
 import { addSoundToSampler, samplerSelector } from "./samplerSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const ListSounds = () => {
     const list = useSelector(listSelector);
@@ -13,6 +14,7 @@ const ListSounds = () => {
     const [sound, setSound] = React.useState();
     const sampler = useSelector(samplerSelector);
     const actual = sampler.currentModify;
+    const navigation = useNavigation();
 
     async function playSoundLocal(item){
 
@@ -73,7 +75,12 @@ const ListSounds = () => {
                 <Button color="#A81816" onPress={()=> {deleteSound(item)}} title="delete this sound"/>
                 <View>
                     <Button color="#1677A8" title="Play Sound" onPress={()=>{playSound(item)}} />
-                    <Button color="#1DA878" title="choose this sound" onPress={()=>{chooseSound(item)}}/>
+                    <Button color="#1DA878" title="Choose this sound"  onPress={() => (chooseSound(item),
+                        navigation.navigate({
+                            name :"Sampler"
+                        })
+                    )}/>
+                   
                 </View>
             </View>
             }
