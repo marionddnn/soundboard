@@ -5,7 +5,8 @@ import  Home  from "./Home";
 import ListSounds from "./ListSounds";
 import SearchSounds from './SearchSounds';
 import Sampler from "./Sampler";
-import Modify from "./Modify"
+import Modify from "./Modify";
+import Login from "./Login";
 
 const Nav = createNativeStackNavigator();
 
@@ -26,9 +27,12 @@ const MainNavigation = () => {
           <Nav.Screen
            name="ListSounds"
            component={ListSounds}/>
-        <Nav.Screen
+          <Nav.Screen
            name="SearchSounds"
            component={SearchSounds}/>
+          <Nav.Screen
+           name="Login"
+           component={Login}/>
         </Nav.Navigator>
         </NavigationContainer>
   );

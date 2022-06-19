@@ -56,10 +56,14 @@ const ListSounds = () => {
       }, [sound]);
 
     return (
-        <ScrollView>
+        <View>
+        <Text> My list </Text>
         <FlatList
             data={list}
-            scrollEnabled={false}
+            ListHeaderComponent={
+                <ScrollView>
+                </ScrollView>
+            }
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => 
             <View style={{  padding : "4%" }}>
@@ -69,7 +73,7 @@ const ListSounds = () => {
                 <View style={{  padding : "4%" }}>
                     <Text style={{  marginRight : "1%", borderStyle : "solid", borderColor : "black", borderTopWidth : 1, backgroundColor: "grey", padding : "0.2%" }}> Tags </Text>
                     {[...item.tags].map((tag) => { 
-                        return (<Text style={{  marginRight : "1%", border : "1px solid tranparent", backgroundColor: "lightgrey", padding : "1%" }}>- {tag}</Text>);
+                        return (<Text style={{  marginRight : "1%", backgroundColor: "lightgrey", padding : "1%" }}>- {tag}</Text>);
                     })}
                 </View>
                 <Button color="#A81816" onPress={()=> {deleteSound(item)}} title="delete this sound"/>
@@ -80,12 +84,11 @@ const ListSounds = () => {
                             name :"Sampler"
                         })
                     )}/>
-                   
                 </View>
             </View>
             }
         />
-     </ScrollView>
+     </View>
     );
   };
 

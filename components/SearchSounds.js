@@ -12,9 +12,6 @@ import { useSelector } from "react-redux";
 
 const Search = () => {
 
-    FS.makeDirectoryAsync(FS.documentDirectory + "Sounds");
-  
-
     const baseUrl = "https://freesound.org/apiv2/search/text/?query=";
     const token = "7yIIC44NakzVpJCMw5lgGNUX9XAmL7BlrBWB6XNl";
     const [search, setSearch] = useState("");
@@ -23,11 +20,17 @@ const Search = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const auth = useSelector(authSelector);
+    
+    async function createDir(){
+      const dirExist = await FS.getInfoAsync(FS.documentDirectory + "Sounds");
+      if(dirExist.exists === false){
+        FS.makeDirectoryAsync(FS.documentDirectory + "Sounds");
+      }
+    }
 
     async function playSound(id) {
       let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ id + "/?token=" + token)).json();
       const uri = r.previews["preview-hq-mp3"];
-      console.log(auth);
       const { sound } = await Audio.Sound.createAsync(
           { uri : uri },
           { shouldPlay: true }
@@ -43,6 +46,9 @@ const Search = () => {
         : undefined;
     }, [sound]);
 
+    React.useEffect(() => {
+      createDir();
+    }, []);
 
     const research = async () => {
       let searchSound = await (await fetch(baseUrl + search + "&token=" + token)).json();
@@ -53,13 +59,13 @@ const Search = () => {
       let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ item.id + "/?token=" + token)).json();
         const {uri} = await FS.downloadAsync(
           r.download,
-          FS.documentDirectory + "Sounds/" + item.id + ".wav",
+          FS.documentDirectory + "Sounds/" + item.id + "." + r.type,
           {
             headers : { 'Authorization': 'Bearer ' + auth }
           }
         );
         
-        const fileInfo = await FS.getInfoAsync(FS.documentDirectory + "Sounds/" + item.id + ".wav");
+        const fileInfo = await FS.getInfoAsync(FS.documentDirectory + "Sounds/" + item.id + "." + r.type);
         const newItem = {...item, uri : fileInfo.uri};
         dispatch(addSoundToList(newItem));
     }
@@ -82,9 +88,9 @@ const Search = () => {
             <View>
                 <Pressable style={{ backgroundColor: "white", padding : "1%", borderBottom : "1px dotted black"}} onPress={() => 
                 (addSound(item),
-                    navigation.navigate({
-                        name :"ListSounds"
-                    })
+                navigation.navigate({
+                    name :"ListSounds"
+                })
                 )}>
                 <Text style={{  marginRight : "1%" }}>Nom : {item.name}</Text>
                 <Text style={{  marginRight : "1%" }}>id : {item.id}</Text>

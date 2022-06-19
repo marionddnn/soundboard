@@ -7,23 +7,23 @@ const Modify = () => {
 
     return (
         <View>
-            <Text> Change my sample </Text>
-            <View style={{flexDirection : "row", flexWrap : "wrap", justifyContent:"space-around"}}>
+            <Text style={{fontSize : 24, color : "grey", textAlign : "center", marginTop : "5%"}}> Change my sample </Text>
+            <View style={{flexDirection : "row", flexWrap : "wrap", justifyContent:"space-around", marginTop : "5%"}}>
                 <View>
-                    <Text> new sample </Text>
+                    <Text style={{color : "#1677A8", fontSize : 18, textAlign : "center", marginBottom : "3%"}}> new sample </Text>
                     <Button title="record a sound"></Button>
-                    <Button title="search on freesound" onPress={() => 
+                    <Button color="#1677A8" title="search on freesound" onPress={() => 
                         (navigation.navigate({
                             name :"SearchSounds"
                         }))}></Button>
-                    <Button title="open my sounds" onPress={() =>
+                    <Button color="#1677A8" title="open my sounds" onPress={() =>
                         (navigation.navigate({
                             name :"ListSounds"
                         }))}>
                     </Button>
                 </View>
                 <View>
-                    <Text>modify the sound</Text>
+                    <Text style={{color : "#1677A8", fontSize : 18, textAlign : "center", marginBottom : "3%"}}>modify the sound</Text>
                     <Button title="modify"></Button>
                 </View>
             </View>
