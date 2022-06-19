@@ -16,27 +16,13 @@ const ListSounds = () => {
     const actual = sampler.currentModify;
     const navigation = useNavigation();
 
-    async function playSoundLocal(item){
-
-        const { sound } = await Audio.Sound.createAsync(
-            item.src
-         );
-         setSound(sound);
-         await sound.playAsync(); 
-    }
-
-    async function playSoundUri(item){
-       const { sound } = await Audio.Sound.createAsync(
-            {uri : item.uri}
-         );
-         setSound(sound);
-         await sound.playAsync(); 
-    }
-
     async function playSound(item) {
-       
-        item.uri  ? playSoundUri(item) : playSoundLocal(item);
-        console.log('Loading Sound');
+        let src = item.uri  ? {uri : item.uri}  : item.src;
+        const { sound } = await Audio.Sound.createAsync(
+           src
+        );
+        setSound(sound);
+        await sound.playAsync(); 
     }
 
     const chooseSound = (item) => {

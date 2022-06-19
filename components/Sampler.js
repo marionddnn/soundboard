@@ -15,30 +15,22 @@ const Sampler = () => {
       dispatch(setCurrentModify(el));
     }
 
-    async function playSoundLocal(item){
-
-      const { sound } = await Audio.Sound.createAsync(
-          item.src
-       );
-       setSound(sound);
-       await sound.playAsync(); 
-    }
-
-    async function playSoundUri(item){
-      const { sound } = await Audio.Sound.createAsync(
-            {uri : item.uri}
-        );
-        setSound(sound);
-        await sound.playAsync(); 
-    }
-
-    function playMySound(el){
+    async function stopSound(){
       if(sound){
-        sound.unloadAsync();
-        }
-      let current = sampler.samplers[el];
-      current.uri  ? playSoundUri(current) : playSoundLocal(current);
-      console.log('Loading Sound');
+        await sound.unloadAsync();
+      }
+    }
+
+    async function playMySound(el){
+    stopSound();
+    let current = sampler.samplers[el];
+    let src =  current.uri  ? {uri : current.uri}  : current.src;
+    const { sound } = await Audio.Sound.createAsync(
+      src
+    );
+    setSound(sound);
+    await sound.playAsync(); 
+    console.log('Loading Sound');
     }
 
     function returnColor(el) {
