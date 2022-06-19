@@ -1,4 +1,4 @@
 # soundboard
 
-install dependencies with npm install
+install dependencies with npm install &
 launch project with expo start
