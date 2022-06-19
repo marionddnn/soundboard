@@ -32,13 +32,13 @@ const listSlice = createSlice({
       }
     },
     deleteSoundToList: (state, action) => {
-      //filer the list and return on the new list only elements which id is not equivalent to the action.payload.id
+      //filter the list and return on the new list only elements which id is not equivalent to the action.payload.id
       let newList = state.filter(item => item.id !== action.payload.id);
       return newList;
     }
   }, 
 });
 
-export const { addSoundToList, deleteSoundToList } = listSlice.actions;
+export const { addSoundToList, deleteSoundToList, filter } = listSlice.actions;
 export const listSelector = (state) => state.list;
 export default listSlice.reducer;

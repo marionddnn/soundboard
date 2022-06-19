@@ -6,12 +6,14 @@ import thunk from 'redux-thunk'
 import listReducer from "./components/listSlice";
 import authReducer from "./components/authSlice";
 import samplerReducer from "./components/samplerSlice";
+import filterReducer from "./components/filterSlice";
 
 const reducers = combineReducers(
   { 
       list : listReducer,
       auth : authReducer,
-      sampler : samplerReducer
+      sampler : samplerReducer,
+      filter : filterReducer
   }
 );
 

@@ -7,14 +7,17 @@ import { useEffect, useState } from "react";
 import * as FS from "expo-file-system";
 import { addSoundToSampler, samplerSelector } from "./samplerSlice";
 import { useNavigation } from "@react-navigation/native";
+import { filter , filterSelector } from "./filterSlice";
 
 const ListSounds = () => {
-    const list = useSelector(listSelector);
+    const filteredList = useSelector(filterSelector);
     const dispatch = useDispatch();
     const [sound, setSound] = React.useState();
     const sampler = useSelector(samplerSelector);
     const actual = sampler.currentModify;
     const navigation = useNavigation();
+    const initialList = useSelector(listSelector);
+    const [list, setList] = React.useState(initialList);
 
     async function playSound(item) {
         // local sounds needs a require to be played : there are two distinct properties to separate them (item.uri for downloaded sounds / item.src for local sounds)
@@ -26,14 +29,33 @@ const ListSounds = () => {
         await sound.playAsync(); 
     }
 
-    const chooseSound = (item) => {
+    function chooseSound (item) {
         let obj = item.src ? {id : actual, src : item.src} : {id : actual, uri : item.uri};
         dispatch(addSoundToSampler(obj));
     }
         
-    const deleteSound = (item) => {
+    function deleteSound (item) {
         dispatch(deleteSoundToList(item));
     }
+
+    function filterSounds (prop) {
+        // filter with the global list and the property for filter
+        dispatch(filter({list : initialList, prop : prop}));
+    }
+
+    React.useEffect(() => {
+        //when the global list is modified, show the global list
+        return setList(initialList);
+      }, [initialList]);
+
+    React.useEffect(() => {
+        //when filtered list is modified, show the filtered list
+        return setList(filteredList);
+      }, [filteredList]);
+
+    React.useEffect(()=>{
+        return setList(initialList);
+    }, []);
 
     React.useEffect(() => {
         return sound
@@ -43,9 +65,14 @@ const ListSounds = () => {
       }, [sound]);
 
     return (
-        <View>
-        <Text> My list </Text>
+        <View style={{  paddingBottom : "30%"}}>
+        <Text style={{  padding : "2%", fontSize : 24, backgroundColor: "#FFF" }}> My list </Text>
         {/* display sound's list */}
+        <Text style={{  paddingTop : "2%", fontSize : 18, fontWeight : "bold" }}> Filters </Text>
+        <View style={{  padding : "2%", display : "flex", flexDirection : "row", flexWrap : "wrap", justifyContent:"space-around", backgroundColor : "darkgrey"}}>
+        <Button color="#1677A8" title="local sounds" onPress={()=>{filterSounds("src")}}/>
+        <Button color="#1677A8" title="freesound sounds" onPress={()=>{filterSounds("uri")}}/>
+        </View>
         <FlatList
             data={list}
             ListHeaderComponent={

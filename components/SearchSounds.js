@@ -20,13 +20,6 @@ const Search = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const auth = useSelector(authSelector);
-    
-    async function createDir(){
-      const dirExist = await FS.getInfoAsync(FS.documentDirectory + "Sounds");
-      if(dirExist.exists === false){
-        FS.makeDirectoryAsync(FS.documentDirectory + "Sounds");
-      }
-    }
 
     async function playSound(id) {
       let r = await (await fetch(base + id + "/?token=" + token)).json();
@@ -45,10 +38,6 @@ const Search = () => {
             sound.unloadAsync(); }
         : undefined;
     }, [sound]);
-
-    React.useEffect(() => {
-      createDir();
-    }, []);
 
     const research = async () => {
       let searchSound = await (await fetch("https://freesound.org/apiv2/search/text/?query=" + search + "&token=" + token)).json();
@@ -83,7 +72,7 @@ const Search = () => {
         style={{backgroundColor:"#fff", width : "100%", margin : "1%"}}
         value ={search}
         placeholder="Search on freesound"/>
-        <Button color="#1DA878" onPress={research} title="Search"></Button>
+        <Button color="#1DA878" onPress={research} title="Search"/>
         <FlatList 
         data={results.results}  
         keyExtractor={(item) => item.id}
