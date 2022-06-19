@@ -40,6 +40,9 @@ const Sampler = () => {
 
     return (
         <View style={{flexDirection : "row", flexWrap : "wrap", justifyContent:"center"}}>
+          {/* create 16 pads for the sampler vue 
+          - on press : play sound
+          - on long press : open the modify vue */}
             {[...Array(15)].map((i, el) => (
                  <Pressable
                  key={el}
@@ -59,7 +62,7 @@ const Sampler = () => {
                         : "none"
                     },
                     {height : 150, width : "30%", margin : 1} 
-                    //issue to fix : rem, vw & vh doesn't work on real android device 
+                    //issue to fix : rem, vw & vh dont work on real android device
                   ]
                 }
                  ></Pressable>

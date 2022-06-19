@@ -17,6 +17,7 @@ const ListSounds = () => {
     const navigation = useNavigation();
 
     async function playSound(item) {
+        // local sounds needs a require to be played : there are two distinct properties to separate them (item.uri for downloaded sounds / item.src for local sounds)
         let src = item.uri  ? {uri : item.uri}  : item.src;
         const { sound } = await Audio.Sound.createAsync(
            src
@@ -44,6 +45,7 @@ const ListSounds = () => {
     return (
         <View>
         <Text> My list </Text>
+        {/* display sound's list */}
         <FlatList
             data={list}
             ListHeaderComponent={
@@ -58,8 +60,9 @@ const ListSounds = () => {
                 <Text style={{  padding : "2%", marginRight : "1%", backgroundColor: "#FFF" }}>username : {item.username}</Text>
                 <View style={{  padding : "4%" }}>
                     <Text style={{  marginRight : "1%", borderStyle : "solid", borderColor : "black", borderTopWidth : 1, backgroundColor: "grey", padding : "0.2%" }}> Tags </Text>
-                    {[...item.tags].map((tag) => { 
-                        return (<Text style={{  marginRight : "1%", backgroundColor: "lightgrey", padding : "1%" }}>- {tag}</Text>);
+                    {//loop on the sound's tags and display them
+                    [...item.tags].map((tag, nb) => { 
+                        return (<Text key={nb} style={{  marginRight : "1%", backgroundColor: "lightgrey", padding : "1%" }}>- {tag}</Text>);
                     })}
                 </View>
                 <Button color="#A81816" onPress={()=> {deleteSound(item)}} title="delete this sound"/>

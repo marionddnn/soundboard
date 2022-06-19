@@ -8,16 +8,16 @@ import axios from "axios";
 const Login = () => {
     const navigation = useNavigation();
     const [code, setCode] = React.useState("");
-    const [enter, setEnter] = React.useState(false);
     const dispatch = useDispatch();
 
     function redirectToFreeSound() {
+        //redirect to freesound authorization form and get the code
         let url = "https://freesound.org/apiv2/oauth2/authorize/?client_id=FvKhzzSJMOLJVoRtxlvh&response_type=code";
         Linking.openURL(url);
-        setEnter(true);
     }
 
     async function addCodeAuth() {
+        //get token with pasted code
         await axios.post(`https://freesound.org/apiv2/oauth2/access_token/`, 
         {}, 
         { 
@@ -30,7 +30,8 @@ const Login = () => {
             }
         })
         .then(response => dispatch(addAuth(response.data.access_token)))
-        .then(navigation.navigate('Sampler'));
+        .then(navigation.navigate('SearchSounds'));
+        // then redirect to search vue
     }
 
     return (

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const listSlice = createSlice({
   name: "list",
+  //store local sounds in the initialState
   initialState: [
     {"id" : "1", "license" : "undefined", "name" : "clap_1", "src" : require('../assets/sounds/clap_1.wav'), "username" : "unknown", "tags" : ["undefined"]},
     {"id" : "2", "license" : "undefined", "name" : "clap_2", "src" : require("../assets/sounds/clap_2.wav"), "username" : "unknown", "tags" : ["undefined"]},
@@ -21,8 +22,9 @@ const listSlice = createSlice({
   ],
   reducers: {
     addSoundToList: (state, action) => {
-      let present = state.map((item) => item.id == action.payload.id ? true : false);
-      if(present.includes(true)){
+      let exist = state.map((item) => item.id == action.payload.id ? true : false);
+      // if there is a value true in exist array -> return the state without update because sound is present, else update with the sound
+      if(exist.includes(true)){
         return state;
       }
       else {
@@ -30,6 +32,7 @@ const listSlice = createSlice({
       }
     },
     deleteSoundToList: (state, action) => {
+      //filer the list and return on the new list only elements which id is not equivalent to the action.payload.id
       let newList = state.filter(item => item.id !== action.payload.id);
       return newList;
     }

@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 
 const Search = () => {
 
-    const baseUrl = "https://freesound.org/apiv2/search/text/?query=";
+    const base = "https://freesound.org/apiv2/sounds/";
     const token = "7yIIC44NakzVpJCMw5lgGNUX9XAmL7BlrBWB6XNl";
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
@@ -29,7 +29,7 @@ const Search = () => {
     }
 
     async function playSound(id) {
-      let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ id + "/?token=" + token)).json();
+      let r = await (await fetch(base + id + "/?token=" + token)).json();
       const uri = r.previews["preview-hq-mp3"];
       const { sound } = await Audio.Sound.createAsync(
           { uri : uri },
@@ -51,12 +51,13 @@ const Search = () => {
     }, []);
 
     const research = async () => {
-      let searchSound = await (await fetch(baseUrl + search + "&token=" + token)).json();
+      let searchSound = await (await fetch("https://freesound.org/apiv2/search/text/?query=" + search + "&token=" + token)).json();
       setResults(searchSound);
     }
 
     async function addSound (item) {
-      let r = await (await fetch("https://freesound.org/apiv2/sounds/"+ item.id + "/?token=" + token)).json();
+      if(auth){
+      let r = await (await fetch(base + item.id + "/?token=" + token)).json();
         const {uri} = await FS.downloadAsync(
           r.download,
           FS.documentDirectory + "Sounds/" + item.id + "." + r.type,
@@ -66,8 +67,12 @@ const Search = () => {
         );
         
         const fileInfo = await FS.getInfoAsync(FS.documentDirectory + "Sounds/" + item.id + "." + r.type);
-        const newItem = {...item, uri : fileInfo.uri};
-        dispatch(addSoundToList(newItem));
+        dispatch(addSoundToList({...item, uri : fileInfo.uri}));
+        navigation.navigate("ListSounds");
+      }
+      else {
+        navigation.navigate("Login");
+      }
     }
 
     return (
@@ -79,19 +84,18 @@ const Search = () => {
         value ={search}
         placeholder="Search on freesound"/>
         <Button color="#1DA878" onPress={research} title="Search"></Button>
-        <FlatList data={results.results}  keyExtractor={(item) => item.id}
+        <FlatList 
+        data={results.results}  
+        keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <ScrollView>
           </ScrollView>
         }
         renderItem={({ item }) => 
             <View>
-                <Pressable style={{ backgroundColor: "white", padding : "1%", borderBottom : "1px dotted black"}} onPress={() => 
-                (addSound(item),
-                navigation.navigate({
-                    name :"ListSounds"
-                })
-                )}>
+                <Pressable style={{ backgroundColor: "white", padding : "1%", borderBottom : "1px dotted black"}} 
+                onPress={() => addSound(item)}
+                >
                 <Text style={{  marginRight : "1%" }}>Nom : {item.name}</Text>
                 <Text style={{  marginRight : "1%" }}>id : {item.id}</Text>
                 <Button color="#1677A8" title="Play Sound" onPress={()=>{playSound(item.id)}}/>
